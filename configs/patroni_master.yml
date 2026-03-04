@@ -1,0 +1,33 @@
+scope: postgres-cluster
+name: pg_master
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: 192.168.56.101:8008
+etcd:
+  hosts:
+  - 192.168.56.103:2379
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+  postgresql:
+    use_pg_rewind: true
+    parameters:
+      wal_level: replica
+      hot_standby: "on"
+      max_wal_senders: 10
+      max_replication_slots: 10
+postgresql:
+  listen: 0.0.0.0:5432
+  connect_address: 192.168.56.101:5432
+  data_dir: /var/lib/postgresql/16/main
+  bin_dir: /usr/lib/postgresql/16/bin
+  authentication:
+    replication:
+      username: replication_user
+      password: password
+    superuser:
+      username: postgres
+      password: password
